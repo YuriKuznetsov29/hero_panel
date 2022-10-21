@@ -5,17 +5,25 @@
 // Активный фильтр имеет класс active
 // Изменять json-файл для удобства МОЖНО!
 // Представьте, что вы попросили бэкенд-разработчика об этом
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {heroesFilter} from '../../actions';
+import {heroesFilter, heroesFetched} from '../../actions';
 
 
 const HeroesFilters = () => {
     const {heroes} = useSelector(state => state);
     const dispatch = useDispatch();
+    const [memoryHeroes, setMemoryHeroes] = useState()
 
-    const filterHeroes = (filterValue) => {
-        // dispatch(heroesFilter(heroes, element))
-        console.log(heroes.filter(({element}) => element === filterValue))
+
+    const filterHeroes = (element) => {
+        setMemoryHeroes(heroes);
+        dispatch(heroesFilter(heroes, element));
+    }
+
+    const clearFilter = () => {
+        console.log(memoryHeroes);
+        dispatch(heroesFetched(memoryHeroes))
     }
 
     return (
@@ -24,16 +32,21 @@ const HeroesFilters = () => {
                 <p className="card-text">Отфильтруйте героев по элементам</p>
                 <div className="btn-group">
                     <button className="btn btn-outline-dark active"
-                        // onClick={filter()}
+                         onClick={() => clearFilter()}
                     >
-                        Все
-                    </button>
+                        Все</button>
                     <button className="btn btn-danger"
-                        onClick={filterHeroes('fire')}
-                    >Огонь</button>
-                    <button className="btn btn-primary">Вода</button>
-                    <button className="btn btn-success">Ветер</button>
-                    <button className="btn btn-secondary">Земля</button>
+                        onClick={() => filterHeroes('fire')}>
+                    Огонь</button>
+                    <button className="btn btn-primary"
+                        onClick={() => filterHeroes('water')}>
+                        Вода</button>
+                    <button className="btn btn-success"
+                        onClick={() => filterHeroes('wind')}>
+                            Ветер</button>
+                    <button className="btn btn-secondary"
+                        onClick={() => filterHeroes('earth')}>
+                        Земля</button>
                 </div>
             </div>
         </div>
