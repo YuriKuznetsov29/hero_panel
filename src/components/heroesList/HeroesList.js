@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { heroesFetching, heroesFetched, heroDeleting, heroAdding, heroesFetchingError } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
-import HeroesAddForm from '../heroesAddForm/HeroesAddForm';
 import Spinner from '../spinner/Spinner';
 
 // Задача для этого компонента:
@@ -13,7 +12,7 @@ import Spinner from '../spinner/Spinner';
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-    const {heroes, heroesLoadingStatus} = useSelector(state => state);
+    const {heroes, heroesLoadingStatus, filters} = useSelector(state => state);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
@@ -27,8 +26,8 @@ const HeroesList = () => {
     }, []);
 
     const deleteHero = (id) => {
-         dispatch(heroDeleting(heroes, id));
-        console.log(id)
+        request("http://localhost:3001/heroes/" + id, 'DELETE');
+        dispatch(heroDeleting(heroes, id));
     };
 
     
@@ -46,10 +45,16 @@ const HeroesList = () => {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
-    const renderHeroesList = (arr) => {
-        <HeroesAddForm addHero={addHero}/>
+    const renderHeroesList = (arr, filterValue) => {
         if (arr.length === 0) {
             return <h5 className="text-center mt-5">Героев пока нет</h5>
+        }
+        if (filterValue.length !== 0 && filterValue[0] !== 'all') {
+            return arr.map(({id, element, ...props}) => {
+
+                return filterValue[0] === element ? <HeroesListItem key={id} id={id} element={element} {...props} deleteHero={deleteHero}/> : null
+                
+            })
         }
         return arr.map(({id, ...props}) => {
 
@@ -58,7 +63,7 @@ const HeroesList = () => {
     }
 
 
-    const elements = renderHeroesList(heroes);
+    const elements = renderHeroesList(heroes, filters);
     return (
         <ul>
             {elements}

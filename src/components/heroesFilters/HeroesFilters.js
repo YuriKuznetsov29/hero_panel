@@ -5,47 +5,43 @@
 // Активный фильтр имеет класс active
 // Изменять json-файл для удобства МОЖНО!
 // Представьте, что вы попросили бэкенд-разработчика об этом
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {heroesFilter, heroesFetched} from '../../actions';
-
+import {heroesFilter} from '../../actions';
+import classNames from 'classnames/bind';
+import { useHttp } from '../../hooks/http.hook';
 
 const HeroesFilters = () => {
-    const {heroes} = useSelector(state => state);
+    const {filters} = useSelector(state => state);
     const dispatch = useDispatch();
-    const [memoryHeroes, setMemoryHeroes] = useState()
-
+    const {request} = useHttp();
 
     const filterHeroes = (element) => {
-        setMemoryHeroes(heroes);
-        dispatch(heroesFilter(heroes, element));
+        // request("http://localhost:3001/filters/", 'DELETE');
+        request("http://localhost:3001/filters/", 'POST', JSON.stringify(element));
+        dispatch(heroesFilter(element));
     }
 
-    const clearFilter = () => {
-        console.log(memoryHeroes);
-        dispatch(heroesFetched(memoryHeroes))
-    }
+    let btnActive = classNames('btn btn-outline-dark', {active: true});
 
     return (
         <div className="card shadow-lg mt-4">
             <div className="card-body">
                 <p className="card-text">Отфильтруйте героев по элементам</p>
                 <div className="btn-group">
-                    <button className="btn btn-outline-dark active"
-                         onClick={() => clearFilter()}
-                    >
+                    <button className={classNames('btn btn-outline-dark', {active: filters[0] === 'all'})}
+                         onClick={() => filterHeroes(['all'])}>
                         Все</button>
-                    <button className="btn btn-danger"
-                        onClick={() => filterHeroes('fire')}>
+                    <button className={classNames("btn btn-danger", {active: filters[0] === 'fire'})}
+                        onClick={() => filterHeroes(['fire'])}>
                     Огонь</button>
-                    <button className="btn btn-primary"
-                        onClick={() => filterHeroes('water')}>
+                    <button className={classNames("btn btn-primary", {active: filters[0] === 'water'})}
+                        onClick={() => filterHeroes(['water'])}>
                         Вода</button>
-                    <button className="btn btn-success"
-                        onClick={() => filterHeroes('wind')}>
+                    <button className={classNames("btn btn-success", {active: filters[0] === 'wind'})}
+                        onClick={() => filterHeroes(['wind'])}>
                             Ветер</button>
-                    <button className="btn btn-secondary"
-                        onClick={() => filterHeroes('earth')}>
+                    <button className={classNames("btn btn-secondary", {active: filters[0] === 'earth'})}
+                        onClick={() => filterHeroes(['earth'])}>
                         Земля</button>
                 </div>
             </div>

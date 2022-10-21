@@ -29,11 +29,11 @@ export const heroAdding = (heroes, newHero) => {
     }
 }
 
-export const heroesFilter = (heroes, filterValue) => {
+export const heroesFilter = (filterValue) => {
     
     return {
         type: 'HEROES_FILTERING',
-        payload: heroes.filter(({element}) => element === filterValue)
+        payload: filterValue
         
     }
 }

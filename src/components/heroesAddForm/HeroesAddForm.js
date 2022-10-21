@@ -14,10 +14,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {heroAdding} from '../../actions';
 import { Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
+import { useHttp } from '../../hooks/http.hook';
 
 const HeroesAddForm = () => {
     const {heroes} = useSelector(state => state);
     const dispatch = useDispatch();
+    const {request} = useHttp();
 
     const createNewHero = (name, description, element) => {
         return (
@@ -28,15 +30,12 @@ const HeroesAddForm = () => {
                 element: element
             }]
         )
-        
     }
 
-
     const addHero = (newHero) => {
+        request("http://localhost:3001/heroes", 'POST', JSON.stringify(newHero[0]));
         dispatch(heroAdding(heroes, newHero));
     };
-
-    
 
     return (
         <div className="border p-4 shadow-lg rounded">

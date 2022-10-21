@@ -1,7 +1,7 @@
 const initialState = {
     heroes: [],
     heroesLoadingStatus: 'idle',
-    filters: []
+    filters: ['all']
 }
 
 const reducer = (state = initialState, action) => {
@@ -32,7 +32,7 @@ const reducer = (state = initialState, action) => {
             case 'HEROES_FILTERING':
                 return {
                     ...state,
-                    heroes: action.payload,
+                    filters: action.payload,
                     heroesLoadingStatus: 'idle'
                 }
         case 'HEROES_FETCHING_ERROR':
